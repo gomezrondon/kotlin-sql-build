@@ -1,10 +1,26 @@
-import SQLEx.Companion.sqlEqual
+
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
 
 class Test {
 
+
+    @Test
+    fun selectCount() {
+        val build = SQLEx().select().count().from("pepe").build()
+
+        assertEquals("""SELECT count(*) FROM pepe""", build.trim())
+
+    }
+
+    @Test
+    fun compactSelect() {
+        val build = SQLEx().selectAllFrom("pepe", "a").build()
+
+        assertEquals("""SELECT * FROM pepe AS a""", build.trim())
+
+    }
 
     @Test
     fun simpleSelect() {
@@ -17,12 +33,12 @@ class Test {
     @Test
     fun simpleWhere() {
         val build = SQLEx().select().everything().from("pepe", "a")
-            .where(sqlEqual("a.field1", "1526")
-         //       .and("a.field2",""" 'abd' """)
+            .where(SQLEx().sqlEqual("a.field1", "1526")
+                    .sqlAnd("a.field2",""" 'abd' """)
             )
             .build()
 
-        assertEquals("""SELECT * FROM pepe AS a WHERE a.field1 = 1526""", build.trim())
+        assertEquals("""SELECT * FROM pepe AS a WHERE  a.field1 = 1526 AND a.field2 =  'abd'""", build.trim())
 
     }
 

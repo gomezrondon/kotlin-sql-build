@@ -13,27 +13,54 @@ fun main() {
 
 class SQLEx(value: String="" ){
 
-    private var sqlExp=""
 
-    companion object {
+    constructor(value2: SQLEx) : this(value2.sqlExp )
+    private var sqlExp = value
+//    companion object {
+//
+//        fun sqlEqual(field: String, value: String): SQLEx {
+//            val sqlEx = SQLEx("""$field = $value """).sqlExp
+//            return SQLEx(sqlEx)
+//        }
+//
+//    }
 
-        fun sqlEqual(field: String, value: String): String {
-            return """$field = $value """
-        }
+    fun sqlEqual(field: String, value: String): SQLEx {
+        sqlExp += """ $field = $value """
+        return  this
+    }
 
+    fun sqlAnd(field: String, value: String): SQLEx {
+        sqlExp += """AND """ + """$field = $value """
+        return this
     }
 
 //    fun and(field: String, value: String): SQLEx {
 //        return sqlEqual(field, value)
 //    }
 
-    fun where(sqlEx: String): SQLEx {
-        sqlExp += """WHERE """ + sqlEx
+    fun where(sqlEx: SQLEx): SQLEx {
+        sqlExp +=  """WHERE """ + sqlEx.sqlExp
+        return this
+    }
+
+    fun selectAllFrom(table:String, alias:String=""): SQLEx  {
+        val prefix = """SELECT * FROM """
+        if (alias.isNotEmpty()) {
+            sqlExp += """$prefix$table AS $alias """
+        } else {
+            sqlExp += """$prefix$table"""
+        }
         return this
     }
 
     fun select(): SQLEx {
         sqlExp += """SELECT """
+        return this
+    }
+
+    fun count(): SQLEx {
+        sqlExp += """count(*) """
         return this
     }
 
@@ -57,5 +84,7 @@ class SQLEx(value: String="" ){
     fun build(): String {
         return sqlExp
     }
+
+
 
 }
