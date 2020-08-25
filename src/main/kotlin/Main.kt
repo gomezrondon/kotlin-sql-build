@@ -26,19 +26,30 @@ infix fun String.diff(str:String):String{
     return "$this != $str"
 }
 
+infix fun SQLEx.or(group: SQLEx): SQLEx {
+    return this.OR(group.build())
+}
 
+infix fun SQLEx.and(s: String): SQLEx {
+    return this.AND(s)
+}
 
 class SQLEx(value: String="" ){
 
 
     constructor(value2: SQLEx) : this(value2.sqlExp )
     private var sqlExp = value
-    companion object {
+    object static{
 
         fun sqlEqual(value: String): SQLEx {
             val sqlEx = """$value """
             return SQLEx(sqlEx)
         }
+
+        fun group(chain: SQLEx): SQLEx {
+             return SQLEx(""" (${chain.sqlExp}) """)
+        }
+
 
     }
 
@@ -47,8 +58,13 @@ class SQLEx(value: String="" ){
         return  this
     }
 
-    fun sqlAnd(value: String): SQLEx {
+    fun AND(value: String): SQLEx {
         sqlExp += """ AND $value """
+        return this
+    }
+
+    fun OR(value: String): SQLEx {
+        sqlExp += """ OR $value """
         return this
     }
 
@@ -56,9 +72,18 @@ class SQLEx(value: String="" ){
 //        return sqlEqual(field, value)
 //    }
 
+    fun group(chain: SQLEx): SQLEx {
+        sqlExp +=  """ (${chain.sqlExp}) """
+        return this
+    }
+
     fun where(sqlEx: SQLEx): SQLEx {
         sqlExp +=  """WHERE """ + sqlEx.sqlExp
         return this
+    }
+
+    fun w(sqlEx: SQLEx): SQLEx {
+        return where(sqlEx)
     }
 
     fun selectAllFrom(table:String, alias:String=""): SQLEx  {
@@ -76,9 +101,17 @@ class SQLEx(value: String="" ){
         return this
     }
 
+    fun s(): SQLEx {
+        return select()
+    }
+
     fun count(): SQLEx {
         sqlExp += """count(*) """
         return this
+    }
+
+    fun c(): SQLEx {
+        return count()
     }
 
     fun everything(): SQLEx {
@@ -96,6 +129,10 @@ class SQLEx(value: String="" ){
         return this
     }
 
+    fun f(table:String, alias:String=""): SQLEx {
+        return from(table, alias)
+    }
+
 
 
     fun build(): String {
@@ -105,6 +142,11 @@ class SQLEx(value: String="" ){
                 .replaceAll(sqlExp, " ")
         return replaceAll
     }
+
+    fun b() :String {
+        return build()
+    }
+
 
 
 
