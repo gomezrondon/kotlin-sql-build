@@ -1,4 +1,5 @@
 
+
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
@@ -32,13 +33,14 @@ class Test {
 
     @Test
     fun simpleWhere() {
+        println("a.field2" eql "hola")
         val build = SQLEx().select().everything().from("pepe", "a")
-            .where(SQLEx().sqlEqual("a.field1", "1526")
-                    .sqlAnd("a.field2",""" 'abd' """)
+            .where(SQLEx("a.field1" eql "1526")
+                    .sqlAnd("a.field2" eql """ 'abd' """)
             )
             .build()
 
-        assertEquals("""SELECT * FROM pepe AS a WHERE  a.field1 = 1526 AND a.field2 =  'abd'""", build.trim())
+        assertEquals("""SELECT * FROM pepe AS a WHERE a.field1 = 1526 AND a.field2 = 'abd'""", build.trim())
 
     }
 

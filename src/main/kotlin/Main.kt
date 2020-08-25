@@ -1,5 +1,4 @@
-
-
+import com.gomezrondon.RegEx
 
 
 fun main() {
@@ -11,27 +10,45 @@ fun main() {
 
 }
 
+infix fun String.eql(str:String):String{
+    return "$this = $str"
+}
+
+infix fun String.grThan(str:String):String{
+    return "$this >= $str"
+}
+
+infix fun String.lessThan(str:String):String{
+    return "$this <= $str"
+}
+
+infix fun String.diff(str:String):String{
+    return "$this != $str"
+}
+
+
+
 class SQLEx(value: String="" ){
 
 
     constructor(value2: SQLEx) : this(value2.sqlExp )
     private var sqlExp = value
-//    companion object {
-//
-//        fun sqlEqual(field: String, value: String): SQLEx {
-//            val sqlEx = SQLEx("""$field = $value """).sqlExp
-//            return SQLEx(sqlEx)
-//        }
-//
-//    }
+    companion object {
 
-    fun sqlEqual(field: String, value: String): SQLEx {
-        sqlExp += """ $field = $value """
+        fun sqlEqual(value: String): SQLEx {
+            val sqlEx = """$value """
+            return SQLEx(sqlEx)
+        }
+
+    }
+
+    fun sqlEqual(value: String): SQLEx {
+        sqlExp += """$value """
         return  this
     }
 
-    fun sqlAnd(field: String, value: String): SQLEx {
-        sqlExp += """AND """ + """$field = $value """
+    fun sqlAnd(value: String): SQLEx {
+        sqlExp += """ AND $value """
         return this
     }
 
@@ -82,7 +99,11 @@ class SQLEx(value: String="" ){
 
 
     fun build(): String {
-        return sqlExp
+        //(\s+)
+        val replaceAll = RegEx()
+                .group(RegEx().space().oneOrMore())
+                .replaceAll(sqlExp, " ")
+        return replaceAll
     }
 
 
