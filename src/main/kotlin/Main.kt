@@ -101,6 +101,12 @@ class SQLEx(value: String="" ){
         return this
     }
 
+    fun fieldList(vararg strings: String): SQLEx  {
+        val list = strings.joinToString(", ")
+        sqlExp += list + " "
+        return  this
+    }
+
     fun s(): SQLEx {
         return select()
     }
