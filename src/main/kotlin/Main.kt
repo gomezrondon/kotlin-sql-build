@@ -1,14 +1,14 @@
 import com.gomezrondon.RegEx
 
-
-fun main() {
-
-    val build = SQLEx().select().everything()
-        .from("pepe", "a")
-        .build()
-    println(build)
-
-}
+//
+//fun main() {
+//
+//    val build = SQLEx().select().everything()
+//        .from(Table("Table1"), "a")
+//        .build()
+//    println(build)
+//
+//}
 
 infix fun String.eql(str:String):String{
     return "$this = $str"
@@ -39,6 +39,9 @@ class SQLEx(value: String="" ){
 
     constructor(value2: SQLEx) : this(value2.sqlExp )
     private var sqlExp = value
+    var sqlTables:MutableList<Table> = mutableListOf()
+
+
     object static{
 
         fun sqlEqual(value: String): SQLEx {
@@ -126,19 +129,39 @@ class SQLEx(value: String="" ){
     }
 
 
-    fun from(table:String, alias:String=""): SQLEx {
-        if (alias.isNotEmpty()) {
-            sqlExp += """FROM $table AS $alias """
+    fun join(table: Table): SQLEx {
+        sqlTables.add(table)
+        if (table.alias.isNotEmpty()) {
+            sqlExp += """INNER JOIN ${table.name} AS ${table.alias} """
         } else {
-            sqlExp += """FROM $table """
+            sqlExp += """INNER JOIN ${table.name} """
         }
         return this
     }
 
-    fun f(table:String, alias:String=""): SQLEx {
-        return from(table, alias)
+    fun on(value: SQLEx): SQLEx {
+        sqlExp += " ON ${value.sqlExp}"
+        return this
     }
 
+    fun from(table: Table): SQLEx {
+        sqlTables.add(table)
+        if (table.alias.isNotEmpty()) {
+            sqlExp += """FROM ${table.name} AS ${table.alias} """
+        } else {
+            sqlExp += """FROM ${table.name} """
+        }
+        return this
+    }
+
+    fun f(table:String ): SQLEx {
+
+        return from(Table(table) )
+    }
+
+    fun f(table:Table): SQLEx {
+        return from(table )
+    }
 
 
     fun build(): String {
@@ -155,5 +178,9 @@ class SQLEx(value: String="" ){
 
 
 
+
+}
+
+data class Table(val name: String, var alias: String=""){
 
 }
