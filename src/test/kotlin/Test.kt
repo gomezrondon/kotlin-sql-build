@@ -24,6 +24,7 @@ class Test {
                 .limit(10)
                 .everything()
                  .f(table)
+                .w( table.f("""field1""") )
                 .b()
 
         assertEquals("""SELECT TOP 10 * FROM Table1 AS A""", build.trim())

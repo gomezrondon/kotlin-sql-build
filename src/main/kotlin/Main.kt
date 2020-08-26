@@ -191,5 +191,9 @@ class SQLEx(value: String="" ){
 }
 
 data class Table(val name: String, var alias: String=""){
+    fun f(s: String): SQLEx {
+        TODO("Not yet implemented")
+    }
+
 
 }
