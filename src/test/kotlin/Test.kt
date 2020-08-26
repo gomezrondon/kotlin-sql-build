@@ -8,13 +8,40 @@ import org.junit.jupiter.api.Assertions.assertEquals
 class Test {
 
 
+
     @Test
+    fun selectWithWhere() {
+        val table1 = Table("Table1", "A")
+
+        var build = SQLEx().s()
+                .limit(10)
+                .everything()
+                .frm(table1)
+                .w(table1.f("""field1""") eql "1256")
+                .b()
+
+
+        assertEquals("""SELECT TOP 10 * FROM Table1 AS A WHERE A.field1 = 1256""", build.trim())
+
+        val table2 = Table("Table2")
+        build = SQLEx().s()
+                .limit(10)
+                .everything()
+                .frm(table2)
+                .w(table2.field("""field1""") eql "1256")
+                .b()
+
+        assertEquals("""SELECT TOP 10 * FROM Table2 WHERE Table2.field1 = 1256""", build.trim())
+    }
+
+
+        @Test
     fun selectWithLimit() {
         val table = Table("Table1", "A")
 
         var build = SQLEx().s()
                 .fieldList("field1")
-                .f(table)
+                .frm(table)
                 .limit(10)
                 .b()
 
@@ -23,8 +50,7 @@ class Test {
         build = SQLEx().s()
                 .limit(10)
                 .everything()
-                 .f(table)
-                .w( table.f("""field1""") )
+                 .frm(table)
                 .b()
 
         assertEquals("""SELECT TOP 10 * FROM Table1 AS A""", build.trim())
@@ -36,7 +62,7 @@ class Test {
     fun joiningTwoTables() {
         val build = SQLEx().s()
                 .fieldList("field1", "field2", "field3")
-                .f(Table("Table1","A") )
+                .frm(Table("Table1","A") )
                 .join(Table("Table2","B") ).on( "a.field1" eql "b.field3" )
                 .b()
 
@@ -49,7 +75,7 @@ class Test {
     fun selectOfSomeFields() {
         val build = SQLEx().s()
                 .fieldList("field1", "field2", "field3")
-                .f("Table1")
+                .frm("Table1")
                 .b()
 
         assertEquals("""SELECT field1, field2, field3 FROM Table1""", build.trim())
@@ -58,7 +84,7 @@ class Test {
 
         @Test
     fun whereWithGroup() {
-        val build = SQLEx().s().c().f("Table1")
+        val build = SQLEx().s().c().frm("Table1")
             .w(group(SQLEx("field1" eql "1526") and ("field2" grThan  "'abd'") )
                         or group(SQLEx("field1" diff  "20") and ("field1" diff  "20"))
             )
@@ -71,7 +97,7 @@ class Test {
 
     @Test
     fun miniSelect() {
-        val build = SQLEx().s().c().f("Table1")
+        val build = SQLEx().s().c().frm("Table1")
             .w(SQLEx("field1" eql "1526")
                 .AND("field2" grThan  "'abd'")
             )

@@ -57,7 +57,7 @@ class SQLEx(value: String="" ){
     }
 
     fun sqlEqual(value: String): SQLEx {
-        sqlExp += """$value """
+        sqlExp += """ = $value """
         return  this
     }
 
@@ -160,12 +160,12 @@ class SQLEx(value: String="" ){
         return this
     }
 
-    fun f(table:String ): SQLEx {
+    fun frm(table:String ): SQLEx {
 
         return from(Table(table) )
     }
 
-    fun f(table:Table): SQLEx {
+    fun frm(table:Table): SQLEx {
         return from(table )
     }
 
@@ -188,12 +188,31 @@ class SQLEx(value: String="" ){
     }
 
 
+
+
+}// fin de clase
+
+
+infix fun SQLEx.eql(str: String): SQLEx {
+     return this.sqlEqual(str)
 }
 
 data class Table(val name: String, var alias: String=""){
-    fun f(s: String): SQLEx {
-        TODO("Not yet implemented")
+
+    fun f(field: String): SQLEx {
+        return field(field)
     }
 
+    fun field(field: String): SQLEx {
+
+        if (this.alias.isNotEmpty()) {
+            val str = "${this.alias}.$field"
+            return SQLEx(str)
+        } else {
+            val str = "${this.name}.$field"
+            return SQLEx(str)
+        }
+
+    }
 
 }
