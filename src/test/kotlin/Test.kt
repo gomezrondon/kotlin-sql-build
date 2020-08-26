@@ -9,12 +9,34 @@ class Test {
 
 
     @Test
+    fun selectWithLimit() {
+        val table = Table("Table1", "A")
+
+        var build = SQLEx().s()
+                .fieldList("field1")
+                .f(table)
+                .limit(10)
+                .b()
+
+        assertEquals("""SELECT TOP 10 field1 FROM Table1 AS A""", build.trim())
+
+        build = SQLEx().s()
+                .limit(10)
+                .everything()
+                 .f(table)
+                .b()
+
+        assertEquals("""SELECT TOP 10 * FROM Table1 AS A""", build.trim())
+
+    }
+
+
+    @Test
     fun joiningTwoTables() {
         val build = SQLEx().s()
                 .fieldList("field1", "field2", "field3")
                 .f(Table("Table1","A") )
-                .join(Table("Table2","B") ).on(SQLEx("a.field1" eql "b.field3"))
-
+                .join(Table("Table2","B") ).on( "a.field1" eql "b.field3" )
                 .b()
 
         assertEquals("""SELECT field1, field2, field3 FROM Table1 AS A INNER JOIN Table2 AS B ON a.field1 = b.field3""", build.trim())
@@ -98,6 +120,8 @@ class Test {
 
 
 }
+
+
 
 
 

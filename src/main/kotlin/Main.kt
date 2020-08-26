@@ -144,6 +144,12 @@ class SQLEx(value: String="" ){
         return this
     }
 
+    fun on(value: String): SQLEx {
+        sqlExp += " ON ${value}"
+        return this
+    }
+
+
     fun from(table: Table): SQLEx {
         sqlTables.add(table)
         if (table.alias.isNotEmpty()) {
@@ -176,7 +182,10 @@ class SQLEx(value: String="" ){
         return build()
     }
 
-
+    fun limit(i: Int): SQLEx {
+        val replace = this.sqlExp.replace("SELECT", "SELECT TOP $i ")
+        return SQLEx(replace)
+    }
 
 
 }
