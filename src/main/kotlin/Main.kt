@@ -18,6 +18,10 @@ infix fun String.grThan(str:String):String{
     return "$this >= $str"
 }
 
+infix fun SQLEx.grThan(str: String): String {
+    return "${this.build()} >= $str"
+}
+
 infix fun String.lessThan(str:String):String{
     return "$this <= $str"
 }
@@ -199,12 +203,20 @@ infix fun SQLEx.eql(str: String): SQLEx {
 
 data class Table(val name: String, var alias: String=""){
 
+
+    val fields:MutableList<String> = mutableListOf()
+
     fun f(field: String): SQLEx {
         return field(field)
     }
 
-    fun field(field: String): SQLEx {
+    fun f(i: Int): SQLEx {
+        val field = fields[i]
+        return field(field)
+    }
 
+    fun field(field: String): SQLEx {
+        fields.add(field)
         if (this.alias.isNotEmpty()) {
             val str = "${this.alias}.$field"
             return SQLEx(str)
@@ -214,5 +226,12 @@ data class Table(val name: String, var alias: String=""){
         }
 
     }
+
+    fun add(field: String): Table {
+        fields.add(field)
+        return this
+    }
+
+
 
 }

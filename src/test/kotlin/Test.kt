@@ -10,6 +10,22 @@ class Test {
 
 
     @Test
+    fun testAddingFieldsToTable() {
+        val table1 = Table("Table1", "A").add("field1").add("field2")
+
+        val build = SQLEx().s()
+                .limit(10)
+                .everything()
+                .frm(table1)
+                .w(SQLEx(table1.f(0) eql "1526") and (table1.f(1) grThan  "'abd'"))
+                .b()
+
+        assertEquals("""SELECT TOP 10 * FROM Table1 AS A WHERE A.field1 = 1526 AND A.field2 >= 'abd'""", build.trim())
+
+    }
+
+
+    @Test
     fun selectWithWhere() {
         val table1 = Table("Table1", "A")
 
