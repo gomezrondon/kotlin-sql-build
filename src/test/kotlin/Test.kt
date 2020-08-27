@@ -8,19 +8,36 @@ import org.junit.jupiter.api.Assertions.assertEquals
 
 class Test {
 
+
+    @Test
+    fun testHaving() {
+        val table1 = Table("Table1", "A").add("field1").add("field2")
+
+        val build = SQLEx().s()
+                .fieldList(table1.f(0), table1.f(1))
+                .c()
+                .frm(table1)
+                .groupBy(table1.f(0), table1.f(1))
+                .having("count(*)" grThan  "1")
+                .b()
+
+        assertEquals("""SELECT A.field1, A.field2 , count(*) FROM Table1 AS A GROUP BY A.field1, A.field2 HAVING count(*) > 1""", build.trim())
+
+    }
+
     @Test
     fun testGroupBy() {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
         val build = SQLEx().s()
-                .limit(10)
-                .everything()
+                .fieldList(table1.f(0), table1.f(1))
+                .c()
                 .frm(table1)
                 .groupBy(table1.f(0), table1.f(1))
                 .oBy(table1.f(0), table1.f(1), order = ORDER_DESC)
                 .b()
 
-        assertEquals("""SELECT TOP 10 * FROM Table1 AS A GROUP BY A.field1, A.field2 ORDER BY A.field1, A.field2 DESC""", build.trim())
+        assertEquals("""SELECT A.field1, A.field2 , count(*) FROM Table1 AS A GROUP BY A.field1, A.field2 ORDER BY A.field1, A.field2 DESC""", build.trim())
 
     }
 
@@ -52,7 +69,7 @@ class Test {
                 .w(SQLEx(table1.f(0) eql "1526") and (table1.f(1) grThan  "'abd'"))
                 .b()
 
-        assertEquals("""SELECT TOP 10 * FROM Table1 AS A WHERE A.field1 = 1526 AND A.field2 >= 'abd'""", build.trim())
+        assertEquals("""SELECT TOP 10 * FROM Table1 AS A WHERE A.field1 = 1526 AND A.field2 > 'abd'""", build.trim())
 
     }
 
@@ -138,7 +155,7 @@ class Test {
             )
             .b()
 
-        assertEquals("""SELECT count(*) FROM Table1 WHERE (field1 = 1526 AND field2 >= 'abd' ) OR (field1 != 20 AND field1 != 20 )""", build.trim())
+        assertEquals("""SELECT count(*) FROM Table1 WHERE (field1 = 1526 AND field2 > 'abd' ) OR (field1 != 20 AND field1 != 20 )""", build.trim())
 
     }
 
@@ -151,7 +168,7 @@ class Test {
             )
             .b()
 
-        assertEquals("""SELECT count(*) FROM Table1 WHERE field1 = 1526 AND field2 >= 'abd'""", build.trim())
+        assertEquals("""SELECT count(*) FROM Table1 WHERE field1 = 1526 AND field2 > 'abd'""", build.trim())
 
     }
 

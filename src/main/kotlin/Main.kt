@@ -16,15 +16,16 @@ infix fun String.eql(str:String):String{
 }
 
 infix fun String.grThan(str:String):String{
-    return "$this >= $str"
+    return "$this > $str"
 }
 
 infix fun SQLEx.grThan(str: String): String {
-    return "${this.build()} >= $str"
+    return "${this.build()} > $str"
 }
 
+
 infix fun String.lessThan(str:String):String{
-    return "$this <= $str"
+    return "$this < $str"
 }
 
 infix fun String.diff(str:String):String{
@@ -37,6 +38,10 @@ infix fun SQLEx.or(group: SQLEx): SQLEx {
 
 infix fun SQLEx.and(s: String): SQLEx {
     return this.AND(s)
+}
+
+infix fun SQLEx.diff(str: String): SQLEx {
+    return SQLEx("${this.build()} != $str")
 }
 
 class SQLEx(value: String="" ){
@@ -97,6 +102,17 @@ class SQLEx(value: String="" ){
         return where(sqlEx)
     }
 
+
+    fun having(sqlEx: SQLEx): SQLEx {
+        sqlExp +=  """HAVING """ + sqlEx.sqlExp
+        return this
+    }
+
+    fun having(sqlEx: String): SQLEx {
+        return having(SQLEx(sqlEx))
+    }
+
+
     fun selectAllFrom(table:String, alias:String=""): SQLEx  {
         val prefix = """SELECT * FROM """
         if (alias.isNotEmpty()) {
@@ -118,12 +134,24 @@ class SQLEx(value: String="" ){
         return  this
     }
 
+    fun fieldList(vararg fields: SQLEx ): SQLEx {
+        val list = fields.map { it.sqlExp }.joinToString(", ")
+        sqlExp += "$list "
+        return this
+    }
+
+
     fun s(): SQLEx {
         return select()
     }
 
     fun count(): SQLEx {
-        sqlExp += """count(*) """
+        if (sqlExp.trim() == "SELECT") {
+            sqlExp += """count(*) """
+        } else {
+            sqlExp += """, count(*) """
+        }
+
         return this
     }
 
@@ -210,6 +238,8 @@ class SQLEx(value: String="" ){
         sqlExp += " GROUP BY $list "
         return this
     }
+
+
 
 
 }// fin de clase
