@@ -10,6 +10,30 @@ class Test {
 
 
     @Test
+    fun testPrettyPrint() {
+        val table1 = Table("Table1", "A").add("field1").add("field2")
+
+        val build = SQLEx().selectAllFrom(table1)
+                 .groupBy(table1.f(0), table1.f(1))
+                .having("count(*)" grThan  "1")
+                .prettyPrint()
+
+        assertEquals("""
+            SELECT
+                    * 
+                FROM
+                    Table1 AS A  
+                GROUP BY
+                    A.field1,
+                    A.field2 
+                HAVING
+                    count(*) > 1
+        """.trimIndent(), build.trim())
+
+    }
+
+
+    @Test
     fun testHaving() {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
@@ -182,7 +206,7 @@ class Test {
 
     @Test
     fun compactSelect() {
-        val build = SQLEx().selectAllFrom("Table1", "a").build()
+        val build = SQLEx().selectAllFrom(Table("Table1","a")).build()
 
         assertEquals("""SELECT * FROM Table1 AS a""", build.trim())
 

@@ -1,5 +1,6 @@
 import SQLEx.static.ORDER_DESC
 import com.gomezrondon.RegEx
+import org.hibernate.engine.jdbc.internal.BasicFormatterImpl
 
 //
 //fun main() {
@@ -11,11 +12,11 @@ import com.gomezrondon.RegEx
 //
 //}
 
-infix fun String.eql(str:String): SQLEx {
+infix fun String.eql(str: String): SQLEx {
     return SQLEx("$this = $str")
 }
 
-infix fun String.grThan(str:String): SQLEx {
+infix fun String.grThan(str: String): SQLEx {
     return SQLEx("$this > $str")
 }
 
@@ -24,11 +25,11 @@ infix fun SQLEx.grThan(str: String): SQLEx {
 }
 
 
-infix fun String.lessThan(str:String):String{
+infix fun String.lessThan(str: String):String{
     return "$this < $str"
 }
 
-infix fun String.diff(str:String): SQLEx {
+infix fun String.diff(str: String): SQLEx {
     return SQLEx("$this != $str")
 }
 
@@ -44,10 +45,10 @@ infix fun SQLEx.diff(str: String): SQLEx {
     return SQLEx("${this.build()} != $str")
 }
 
-class SQLEx(value: String="" ){
+class SQLEx(value: String = ""){
 
 
-    constructor(value2: SQLEx) : this(value2.sqlExp )
+    constructor(value2: SQLEx) : this(value2.sqlExp)
     private var sqlExp = value
     var sqlTables:MutableList<Table> = mutableListOf()
 
@@ -113,13 +114,9 @@ class SQLEx(value: String="" ){
     }
 
 
-    fun selectAllFrom(table:String, alias:String=""): SQLEx  {
-        val prefix = """SELECT * FROM """
-        if (alias.isNotEmpty()) {
-            sqlExp += """$prefix$table AS $alias """
-        } else {
-            sqlExp += """$prefix$table"""
-        }
+    fun selectAllFrom(table: Table): SQLEx  {
+        sqlExp += """SELECT * """
+        from(table)
         return this
     }
 
@@ -134,7 +131,7 @@ class SQLEx(value: String="" ){
         return  this
     }
 
-    fun fieldList(vararg fields: SQLEx ): SQLEx {
+    fun fieldList(vararg fields: SQLEx): SQLEx {
         val list = fields.map { it.sqlExp }.joinToString(", ")
         sqlExp += "$list "
         return this
@@ -196,15 +193,19 @@ class SQLEx(value: String="" ){
         return this
     }
 
-    fun frm(table:String ): SQLEx {
+    fun frm(table: String): SQLEx {
 
-        return from(Table(table) )
+        return from(Table(table))
     }
 
-    fun frm(table:Table): SQLEx {
-        return from(table )
+    fun frm(table: Table): SQLEx {
+        return from(table)
     }
 
+    fun prettyPrint(): String {
+        val formattedSQL = BasicFormatterImpl().format(sqlExp)
+        return formattedSQL
+    }
 
     fun build(): String {
         //(\s+)
@@ -223,13 +224,13 @@ class SQLEx(value: String="" ){
         return SQLEx(replace)
     }
 
-    fun orderBy(vararg fields: SQLEx, order:String=ORDER_DESC): SQLEx {
+    fun orderBy(vararg fields: SQLEx, order: String = ORDER_DESC): SQLEx {
         val list = fields.map { it.sqlExp }.joinToString(", ")
         sqlExp += " ORDER BY $list $order"
         return this
     }
 
-    fun oBy(vararg fields: SQLEx, order:String=ORDER_DESC): SQLEx {
+    fun oBy(vararg fields: SQLEx, order: String = ORDER_DESC): SQLEx {
         return orderBy(*fields, order = order)
     }
 
@@ -249,7 +250,7 @@ infix fun SQLEx.eql(str: String): SQLEx {
      return this.sqlEqual(str)
 }
 
-data class Table(val name: String, var alias: String=""){
+data class Table(val name: String, var alias: String = ""){
 
 
     val fields:MutableList<String> = mutableListOf()
