@@ -239,7 +239,12 @@ class SQLEx(value: String="" ){
         return this
     }
 
-
+    fun selectCountFrom(tables: MutableList<Table>): SQLEx {
+        tables.forEach { tbl ->
+            sqlExp += SQLEx().s().c().frm(tbl.name).b() + "; \n"
+        }
+        return this
+    }
 
 
 }// fin de clase
