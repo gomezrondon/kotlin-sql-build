@@ -199,7 +199,7 @@ class Test {
 
     @Test
     fun simpleWhere() {
-        println("a.field2" eql "hola")
+
         val build = SQLEx().select().everything().from(Table("Table1","a") )
             .where(SQLEx("a.field1" eql "1526")
                     .AND("a.field2" eql """ 'abd' """)

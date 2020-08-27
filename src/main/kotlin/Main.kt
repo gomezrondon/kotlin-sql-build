@@ -11,16 +11,16 @@ import com.gomezrondon.RegEx
 //
 //}
 
-infix fun String.eql(str:String):String{
-    return "$this = $str"
+infix fun String.eql(str:String): SQLEx {
+    return SQLEx("$this = $str")
 }
 
-infix fun String.grThan(str:String):String{
-    return "$this > $str"
+infix fun String.grThan(str:String): SQLEx {
+    return SQLEx("$this > $str")
 }
 
-infix fun SQLEx.grThan(str: String): String {
-    return "${this.build()} > $str"
+infix fun SQLEx.grThan(str: String): SQLEx {
+    return SQLEx("${this.build()} > $str")
 }
 
 
@@ -28,16 +28,16 @@ infix fun String.lessThan(str:String):String{
     return "$this < $str"
 }
 
-infix fun String.diff(str:String):String{
-    return "$this != $str"
+infix fun String.diff(str:String): SQLEx {
+    return SQLEx("$this != $str")
 }
 
 infix fun SQLEx.or(group: SQLEx): SQLEx {
     return this.OR(group.build())
 }
 
-infix fun SQLEx.and(s: String): SQLEx {
-    return this.AND(s)
+infix fun SQLEx.and(s: SQLEx): SQLEx {
+    return this.AND(SQLEx(s))
 }
 
 infix fun SQLEx.diff(str: String): SQLEx {
@@ -74,8 +74,8 @@ class SQLEx(value: String="" ){
         return  this
     }
 
-    fun AND(value: String): SQLEx {
-        sqlExp += """ AND $value """
+    fun AND(value: SQLEx): SQLEx {
+        sqlExp += """ AND ${value.sqlExp} """
         return this
     }
 
