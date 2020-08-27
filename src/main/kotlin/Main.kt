@@ -247,7 +247,11 @@ class SQLEx(value: String = ""){
 
 
 infix fun SQLEx.eql(str: String): SQLEx {
-     return this.sqlEqual(str)
+    return this.sqlEqual(str )
+}
+
+infix fun SQLEx.eql(str: SQLEx): SQLEx {
+     return this.sqlEqual(str.build())
 }
 
 data class Table(val name: String, var alias: String = ""){

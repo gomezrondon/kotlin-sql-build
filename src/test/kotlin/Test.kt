@@ -14,20 +14,13 @@ class Test {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
         val build = SQLEx().selectAllFrom(table1)
-                 .groupBy(table1.f(0), table1.f(1))
-                .having("count(*)" grThan  "1")
                 .prettyPrint()
 
         assertEquals("""
             SELECT
                     * 
                 FROM
-                    Table1 AS A  
-                GROUP BY
-                    A.field1,
-                    A.field2 
-                HAVING
-                    count(*) > 1
+                    Table1 AS A
         """.trimIndent(), build.trim())
 
     }
@@ -149,13 +142,17 @@ class Test {
 
     @Test
     fun joiningTwoTables() {
+
+        val table1 = Table("Table1", "A").add("field1").add("field2")
+        val table2 = Table("Table2", "B").add("field3")
+
         val build = SQLEx().s()
-                .fieldList("field1", "field2", "field3")
-                .frm(Table("Table1","A") )
-                .join(Table("Table2","B") ).on( "a.field1" eql "b.field3" )
+                .fieldList(table1.f(0),table1.f(1) , table2.f(0))
+                .frm(table1)
+                .join(table2).on( table1.f(0) eql table2.f(0) )
                 .b()
 
-        assertEquals("""SELECT field1, field2, field3 FROM Table1 AS A INNER JOIN Table2 AS B ON a.field1 = b.field3""", build.trim())
+        assertEquals("""SELECT A.field1, A.field2, B.field3 FROM Table1 AS A INNER JOIN Table2 AS B ON A.field1 = B.field3""", build.trim())
 
     }
 
