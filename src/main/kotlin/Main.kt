@@ -1,3 +1,4 @@
+import SQLEx.static.ORDER_DESC
 import com.gomezrondon.RegEx
 
 //
@@ -47,6 +48,9 @@ class SQLEx(value: String="" ){
 
 
     object static{
+
+        const val ORDER_DESC = "DESC"
+        const val ORDER_ASC = "ASC"
 
         fun sqlEqual(value: String): SQLEx {
             val sqlEx = """$value """
@@ -191,7 +195,11 @@ class SQLEx(value: String="" ){
         return SQLEx(replace)
     }
 
-
+    fun orderBy(vararg fields: SQLEx, order:String=ORDER_DESC): SQLEx {
+        val list = fields.map { it.sqlExp }.joinToString(", ")
+        sqlExp += " ORDER BY $list $order"
+        return this
+    }
 
 
 }// fin de clase
