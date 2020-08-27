@@ -201,6 +201,16 @@ class SQLEx(value: String="" ){
         return this
     }
 
+    fun oBy(vararg fields: SQLEx, order:String=ORDER_DESC): SQLEx {
+        return orderBy(*fields, order = order)
+    }
+
+    fun groupBy(vararg fields: SQLEx): SQLEx {
+        val list = fields.map { it.sqlExp }.joinToString(", ")
+        sqlExp += " GROUP BY $list "
+        return this
+    }
+
 
 }// fin de clase
 

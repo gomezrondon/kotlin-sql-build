@@ -8,8 +8,21 @@ import org.junit.jupiter.api.Assertions.assertEquals
 
 class Test {
 
+    @Test
+    fun testGroupBy() {
+        val table1 = Table("Table1", "A").add("field1").add("field2")
 
+        val build = SQLEx().s()
+                .limit(10)
+                .everything()
+                .frm(table1)
+                .groupBy(table1.f(0), table1.f(1))
+                .oBy(table1.f(0), table1.f(1), order = ORDER_DESC)
+                .b()
 
+        assertEquals("""SELECT TOP 10 * FROM Table1 AS A GROUP BY A.field1, A.field2 ORDER BY A.field1, A.field2 DESC""", build.trim())
+
+    }
 
 
     @Test
