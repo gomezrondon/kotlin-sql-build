@@ -247,6 +247,23 @@ class SQLEx(value: String = ""){
         return this
     }
 
+    fun deleteFrom(tables: MutableList<Table>): SQLEx {
+        tables.forEach { tbl ->
+            sqlExp += SQLEx().deleteFrom(tbl).b() + "; \n"
+        }
+        return this
+    }
+
+    fun deleteFrom(table: Table): SQLEx {
+        if (table.alias.isNotEmpty()) {
+            sqlExp += """DELETE FROM ${table.name} AS ${table.alias} """
+        } else {
+            sqlExp += """DELETE FROM ${table.name}"""
+        }
+
+        return this
+    }
+
 
 }// fin de clase
 

@@ -10,6 +10,30 @@ import org.junit.jupiter.api.DisplayName
 class Test {
 
 
+    @Test
+    @DisplayName("Test multiple Delete tables statements")
+    fun testMultipleDeletes() {
+        val tables = mutableListOf(Table("#temp1" ) , Table("#temp2" ) )
+
+        val build = SQLEx().deleteFrom(tables)
+                .b()
+
+        assertEquals("""DELETE FROM #temp1; DELETE FROM #temp2;""", build.trim())
+
+    }
+
+    @Test
+    @DisplayName("Test Delete statements")
+    fun testDelete() {
+        val table1 = Table("Table1", "A").add("field1")
+
+        val build = SQLEx().deleteFrom(table1)
+                .where(table1.f(0) eql  "0")
+                .b()
+
+        assertEquals("""DELETE FROM Table1 AS A WHERE A.field1 = 0""", build.trim())
+
+    }
 
     @Test
     @DisplayName("Test multiple select counts queries")
