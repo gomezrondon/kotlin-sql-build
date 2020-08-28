@@ -11,6 +11,20 @@ class Test {
 
 
     @Test
+    @DisplayName("Test insert into")
+    fun testInsert() {
+        val table1 = Table("Table1", "A").add("field1", "field2", "field3")
+
+        val build = SQLEx().insertInto(table1)
+                .values("AAA", "'2017-01-01'", "563")
+                .b()
+
+        assertEquals("""INSERT INTO Table1 (field1, field2, field3) VALUES (AAA, '2017-01-01', 563)""", build.trim())
+
+    }
+
+
+    @Test
     @DisplayName("Test multiple Delete tables statements")
     fun testMultipleDeletes() {
         val tables = mutableListOf(Table("#temp1" ) , Table("#temp2" ) )
@@ -50,7 +64,7 @@ class Test {
     @Test
     @DisplayName("Test sql with formatting")
     fun testPrettyPrint() {
-        val table1 = Table("Table1", "A").add("field1").add("field2")
+        val table1 = Table("Table1", "A").add("field1", "field2")
 
         val build = SQLEx().selectAllFrom(table1)
                 .prettyPrint()
@@ -68,7 +82,7 @@ class Test {
     @Test
     @DisplayName("Test query with Having")
     fun testHaving() {
-        val table1 = Table("Table1", "A").add("field1").add("field2")
+        val table1 = Table("Table1", "A").add("field1", "field2")
 
         val build = SQLEx().s()
                 .fieldList(table1.f(0), table1.f(1))
@@ -85,7 +99,7 @@ class Test {
     @Test
     @DisplayName("Test with group by")
     fun testGroupBy() {
-        val table1 = Table("Table1", "A").add("field1").add("field2")
+        val table1 = Table("Table1", "A").add("field1", "field2")
 
         val build = SQLEx().s()
                 .fieldList(table1.f(0), table1.f(1))
@@ -103,7 +117,7 @@ class Test {
     @Test
     @DisplayName("Test with order by")
     fun testOrderBy() {
-        val table1 = Table("Table1", "A").add("field1").add("field2")
+        val table1 = Table("Table1", "A").add("field1", "field2")
 
         val build = SQLEx().s()
                 .limit(10)
@@ -120,7 +134,7 @@ class Test {
     @Test
     @DisplayName("Test Adding fields to a table first")
     fun testAddingFieldsToTable() {
-        val table1 = Table("Table1", "A").add("field1").add("field2")
+        val table1 = Table("Table1", "A").add("field1", "field2")
 
         val build = SQLEx().s()
                 .limit(10)
@@ -189,7 +203,7 @@ class Test {
     @DisplayName("Test joining two tables")
     fun joiningTwoTables() {
 
-        val table1 = Table("Table1", "A").add("field1").add("field2")
+        val table1 = Table("Table1", "A").add("field1", "field2")
         val table2 = Table("Table2", "B").add("field3")
 
         val build = SQLEx().s()

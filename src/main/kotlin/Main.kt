@@ -264,6 +264,18 @@ class SQLEx(value: String = ""){
         return this
     }
 
+    fun insertInto(table: Table): SQLEx {
+        sqlExp += """INSERT INTO ${table.name} ("""
+        sqlExp += table.fields.joinToString(", ") + ")"
+
+        return this
+    }
+
+    fun values(vararg values: String): SQLEx {
+        sqlExp += " VALUES ("+values.joinToString(", ") + ")"
+        return this
+    }
+
 
 }// fin de clase
 
@@ -302,11 +314,12 @@ data class Table(val name: String, var alias: String = ""){
 
     }
 
-    fun add(field: String): Table {
-        fields.add(field)
+    fun add(vararg values: String): Table {
+        for (field in values) {
+            fields.add(field)
+        }
         return this
     }
-
 
 
 }
