@@ -4,10 +4,24 @@ import SQLEx.static.ORDER_DESC
 import SQLEx.static.group
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
 
 
 class Test {
 
+
+
+    @Test
+    @DisplayName("Test multiple select counts queries")
+    fun testMultipleSelectCounts() {
+        val tables = mutableListOf<Table>(Table("#temp1" ) , Table("#temp2" ) )
+
+        val build = SQLEx().selectCountFrom(tables)
+                .b()
+
+        assertEquals("""SELECT count(*) FROM #temp1 ; SELECT count(*) FROM #temp2 ;""", build.trim())
+
+    }
 
     @Test
     fun testPrettyPrint() {
