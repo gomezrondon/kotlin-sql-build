@@ -24,6 +24,7 @@ class Test {
     }
 
     @Test
+    @DisplayName("Test sql with formatting")
     fun testPrettyPrint() {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
@@ -41,6 +42,7 @@ class Test {
 
 
     @Test
+    @DisplayName("Test query with Having")
     fun testHaving() {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
@@ -57,6 +59,7 @@ class Test {
     }
 
     @Test
+    @DisplayName("Test with group by")
     fun testGroupBy() {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
@@ -74,6 +77,7 @@ class Test {
 
 
     @Test
+    @DisplayName("Test with order by")
     fun testOrderBy() {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
@@ -90,6 +94,7 @@ class Test {
 
 
     @Test
+    @DisplayName("Test Adding fields to a table first")
     fun testAddingFieldsToTable() {
         val table1 = Table("Table1", "A").add("field1").add("field2")
 
@@ -106,6 +111,7 @@ class Test {
 
 
     @Test
+    @DisplayName("Select with where")
     fun selectWithWhere() {
         val table1 = Table("Table1", "A")
 
@@ -132,6 +138,7 @@ class Test {
 
 
         @Test
+        @DisplayName("query with limit")
     fun selectWithLimit() {
         val table = Table("Table1", "A")
 
@@ -155,6 +162,7 @@ class Test {
 
 
     @Test
+    @DisplayName("Test joining two tables")
     fun joiningTwoTables() {
 
         val table1 = Table("Table1", "A").add("field1").add("field2")
@@ -172,6 +180,7 @@ class Test {
 
 
     @Test
+    @DisplayName("query with some fields")
     fun selectOfSomeFields() {
         val build = SQLEx().s()
                 .fieldList("field1", "field2", "field3")
@@ -182,7 +191,8 @@ class Test {
 
     }
 
-        @Test
+    @Test
+    @DisplayName("query grouping logic conditions")
     fun whereWithGroup() {
         val build = SQLEx().s().c().frm("Table1")
             .w(group(SQLEx("field1" eql "1526") and ("field2" grThan  "'abd'") )
@@ -196,6 +206,7 @@ class Test {
 
 
     @Test
+    @DisplayName("testing compact query")
     fun miniSelect() {
         val build = SQLEx().s().c().frm("Table1")
             .w(SQLEx("field1" eql "1526")
@@ -208,6 +219,7 @@ class Test {
     }
 
     @Test
+    @DisplayName("Test select count")
     fun selectCount() {
         val build = SQLEx().select().count().from(Table("Table1")).build()
 
@@ -216,6 +228,7 @@ class Test {
     }
 
     @Test
+    @DisplayName("Test selectAllFrom query")
     fun compactSelect() {
         val build = SQLEx().selectAllFrom(Table("Table1","a")).build()
 
@@ -224,6 +237,7 @@ class Test {
     }
 
     @Test
+    @DisplayName("Test simple select")
     fun simpleSelect() {
         val build = SQLEx().select().everything().from(Table("Table1","a"))
             .build()
@@ -233,6 +247,7 @@ class Test {
     }
 
     @Test
+    @DisplayName("Test select with where")
     fun simpleWhere() {
 
         val build = SQLEx().select().everything().from(Table("Table1","a") )
