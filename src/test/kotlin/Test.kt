@@ -2,6 +2,7 @@
 
 import SQLEx.static.ORDER_DESC
 import SQLEx.static.group
+import Table.static.createTableList
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
@@ -13,7 +14,7 @@ class Test {
     @Test
     @DisplayName("Test insert into")
     fun testInsert() {
-        val table1 = Table("Table1", "A").add("field1", "field2", "field3")
+        val table1 = Table("Table1").add("field1   field2      field3") //testing with Tabs and multiple spaces
 
         val build = SQLEx().insertInto(table1)
                 .values("AAA", "'2017-01-01'", "563")
@@ -52,14 +53,17 @@ class Test {
     @Test
     @DisplayName("Test multiple select counts queries")
     fun testMultipleSelectCounts() {
-        val tables = mutableListOf<Table>(Table("#temp1" ) , Table("#temp2" ) )
+        val tNames = "#temp1 #temp2 #temp3"
+        val tables: MutableList<Table> = createTableList(tNames)
 
         val build = SQLEx().selectCountFrom(tables)
                 .b()
 
-        assertEquals("""SELECT count(*) FROM #temp1 ; SELECT count(*) FROM #temp2 ;""", build.trim())
+        assertEquals("""SELECT count(*) FROM #temp1 ; SELECT count(*) FROM #temp2 ; SELECT count(*) FROM #temp3 ;""", build.trim())
 
     }
+
+
 
     @Test
     @DisplayName("Test sql with formatting")

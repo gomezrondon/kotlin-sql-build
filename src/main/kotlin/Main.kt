@@ -290,8 +290,21 @@ infix fun SQLEx.eql(str: SQLEx): SQLEx {
 
 data class Table(val name: String, var alias: String = ""){
 
-
+    private val spaces = RegEx()
+            .group(RegEx().space().oneOrMore())
+            .buildRegExp()
     val fields:MutableList<String> = mutableListOf()
+
+
+    object static{
+        fun createTableList(tNames: String): MutableList<Table> {
+            val regExp = RegEx()
+                    .group(RegEx().space().oneOrMore())
+                    .buildRegExp()
+
+            return tNames.split(regExp).map { Table(it) }.toMutableList()
+        }
+    }
 
     fun f(field: String): SQLEx {
         return field(field)
@@ -315,11 +328,14 @@ data class Table(val name: String, var alias: String = ""){
     }
 
     fun add(vararg values: String): Table {
-        for (field in values) {
+
+        values.flatMap { it.split(spaces) }.forEach { field ->
             fields.add(field)
         }
+
         return this
     }
 
 
-}
+
+}// end of table
