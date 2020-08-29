@@ -2,13 +2,15 @@
 
 import SQLEx.static.ORDER_DESC
 import SQLEx.static.group
-import Table.static.createTableList
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
+import java.io.File
 
 
 class Test {
+
+
 
 
     @Test
@@ -28,9 +30,8 @@ class Test {
     @Test
     @DisplayName("Test multiple Delete tables statements")
     fun testMultipleDeletes() {
-        val tables = mutableListOf(Table("#temp1" ) , Table("#temp2" ) )
-
-        val build = SQLEx().deleteFrom(tables)
+        val tNames = "#temp1 #temp2"
+        val build = SQLEx().deleteFrom(tNames)
                 .b()
 
         assertEquals("""DELETE FROM #temp1; DELETE FROM #temp2;""", build.trim())
@@ -54,9 +55,7 @@ class Test {
     @DisplayName("Test multiple select counts queries")
     fun testMultipleSelectCounts() {
         val tNames = "#temp1 #temp2 #temp3"
-        val tables: MutableList<Table> = createTableList(tNames)
-
-        val build = SQLEx().selectCountFrom(tables)
+        val build = SQLEx().selectCountFrom(tNames)
                 .b()
 
         assertEquals("""SELECT count(*) FROM #temp1 ; SELECT count(*) FROM #temp2 ; SELECT count(*) FROM #temp3 ;""", build.trim())
@@ -68,7 +67,7 @@ class Test {
     @Test
     @DisplayName("Test sql with formatting")
     fun testPrettyPrint() {
-        val table1 = Table("Table1", "A").add("field1", "field2")
+        val table1 = Table("Table1", "A")
 
         val build = SQLEx().selectAllFrom(table1)
                 .prettyPrint()
@@ -86,7 +85,7 @@ class Test {
     @Test
     @DisplayName("Test query with Having")
     fun testHaving() {
-        val table1 = Table("Table1", "A").add("field1", "field2")
+        val table1 = Table("Table1", "A").add("field1 field2")
 
         val build = SQLEx().s()
                 .fieldList(table1.f(0), table1.f(1))
@@ -103,7 +102,7 @@ class Test {
     @Test
     @DisplayName("Test with group by")
     fun testGroupBy() {
-        val table1 = Table("Table1", "A").add("field1", "field2")
+        val table1 = Table("Table1", "A").add("field1 field2")
 
         val build = SQLEx().s()
                 .fieldList(table1.f(0), table1.f(1))
@@ -304,6 +303,7 @@ class Test {
 
 
 }
+
 
 
 

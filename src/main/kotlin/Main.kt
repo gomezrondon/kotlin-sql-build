@@ -1,4 +1,5 @@
 import SQLEx.static.ORDER_DESC
+import Table.static.createTableList
 import com.gomezrondon.RegEx
 import org.hibernate.engine.jdbc.internal.BasicFormatterImpl
 
@@ -247,6 +248,12 @@ class SQLEx(value: String = ""){
         return this
     }
 
+    fun selectCountFrom(tables: String): SQLEx {
+        val tables: MutableList<Table> = createTableList(tables)
+        return selectCountFrom(tables)
+    }
+
+
     fun deleteFrom(tables: MutableList<Table>): SQLEx {
         tables.forEach { tbl ->
             sqlExp += SQLEx().deleteFrom(tbl).b() + "; \n"
@@ -264,6 +271,12 @@ class SQLEx(value: String = ""){
         return this
     }
 
+    fun deleteFrom(table: String): SQLEx {
+        val tables: MutableList<Table> = createTableList(table)
+        return deleteFrom(tables)
+    }
+
+
     fun insertInto(table: Table): SQLEx {
         sqlExp += """INSERT INTO ${table.name} ("""
         sqlExp += table.fields.joinToString(", ") + ")"
@@ -275,6 +288,9 @@ class SQLEx(value: String = ""){
         sqlExp += " VALUES ("+values.joinToString(", ") + ")"
         return this
     }
+
+
+
 
 
 }// fin de clase
