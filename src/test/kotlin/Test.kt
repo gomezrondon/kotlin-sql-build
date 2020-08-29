@@ -2,16 +2,13 @@
 
 import SQLEx.static.ORDER_DESC
 import SQLEx.static.group
+import com.gomezrondon.RegEx
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
-import java.io.File
 
 
 class Test {
-
-
-
 
     @Test
     @DisplayName("Test insert into")
@@ -19,13 +16,12 @@ class Test {
         val table1 = Table("Table1").add("field1   field2      field3") //testing with Tabs and multiple spaces
 
         val build = SQLEx().insertInto(table1)
-                .values("AAA", "'2017-01-01'", "563")
+                .values("'MY Name'   '2017-01-01'    563")//testing with Tabs and multiple spaces
                 .b()
 
-        assertEquals("""INSERT INTO Table1 (field1, field2, field3) VALUES (AAA, '2017-01-01', 563)""", build.trim())
+        assertEquals("""INSERT INTO Table1 (field1, field2, field3) VALUES ('MY Name', '2017-01-01', 563)""", build.trim())
 
     }
-
 
     @Test
     @DisplayName("Test multiple Delete tables statements")

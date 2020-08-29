@@ -289,8 +289,33 @@ class SQLEx(value: String = ""){
         return this
     }
 
+    fun values(values: String): SQLEx {
+        sqlExp += " VALUES ("+insertFormattedValues(values) + ")"
+        return this
+    }
 
 
+    private fun insertFormattedValues(strTemp: String): String {
+        val range = RegEx().startWith(RegEx("'"))
+
+        val regEx: RegEx = RegEx()
+                .letter("'")
+                .group(RegEx.static.range(RegEx.static.addToRange(range)).oneOrMore())
+                .letter("'")
+
+        val strVariables = regEx.findAll(strTemp) // find the string variables
+        val withPlaceHolders = regEx.replaceAll(strTemp, "@%@") // replace the string variables
+
+        var withComa = RegEx()
+                .group(RegEx().space().oneOrMore()) // remove spaces and add coma separator
+                .replaceAll(withPlaceHolders, ", ")
+
+        //----------- re inject the string variables from step 1)
+        strVariables.forEach { variable ->
+            withComa = withComa.replaceFirst("@%@", variable)
+        }
+        return withComa
+    }
 
 
 }// fin de clase
